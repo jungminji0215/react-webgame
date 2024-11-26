@@ -17,28 +17,54 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <script type="text/babel">
-      function LikeButton() {
-        const [liked, setLiked] = React.useState(false);
+      const GuGuDan = () => {
+        const [first, setFirst] = React.useState(Math.ceil(Math.random() * 9));
+        const [second, setSecond] = React.useState(
+          Math.ceil(Math.random() * 9)
+        );
 
-        if (liked) {
-          return "좋아요!";
-        }
+        const [value, setValue] = React.useState("");
+        const [result, setResult] = React.useState("");
+
+        const inputRef = React.useRef();
+
+        const onSubmitForm = (e) => {
+          e.preventDefault();
+
+          if (parseInt(value) === first * second) {
+            // 비동기 ? setState 가 여러개 있어도 여러번 렌더링 되지 않고 리액트가 알아서 한 번만 렌더링되게 한다.
+            setResult(`정답! ${value}`);
+            setFirst(Math.ceil(Math.random() * 9));
+            setSecond(Math.ceil(Math.random() * 9));
+            setValue("");
+            inputRef.current.focus();
+          } else {
+            setResult("땡!");
+            setValue("");
+            inputRef.current.focus();
+          }
+        };
+
+        const onChangeInput = (e) => {
+          setValue(e.target.value);
+        };
 
         return (
-          <button
-            onClick={() => {
-              setLiked(true);
-            }}
-          >
-            Like
-          </button>
+          <React.Fragment>
+            <div>
+              {first} 곱하기 {second} 는?
+            </div>
+            <form onSubmit={onSubmitForm}>
+              <input ref={inputRef} value={value} onChange={onChangeInput} />
+              <button>입력</button>
+            </form>
+            <div> {result}</div>
+          </React.Fragment>
         );
-      }
+      };
     </script>
     <script type="text/babel">
-      ReactDOM.createRoot(document.querySelector("#root")).render(
-        <LikeButton />
-      ); // 리액트 18 버전
+      ReactDOM.createRoot(document.querySelector("#root")).render(<GuGuDan />);
     </script>
   </body>
 </html>
